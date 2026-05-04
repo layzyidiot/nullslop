@@ -1,0 +1,313 @@
+<!-- IN ONE HTML FILE BECAUSE IM AN EVIL FAT CHUD -->
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: white;
+  text-align: center;
+  background: url("https://cdn.discordapp.com/attachments/1187082794359324672/1494392034621001929/image.png?ex=69f982c9&is=69f83149&hm=7217f4e64ea72e9516374a954b7951d84dce93a89b933161917dd619778134d1") no-repeat center center fixed;
+  background-size: cover;
+}
+
+.overlay {
+  background: rgba(0,0,0,0.75);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+h1 { margin-top: -30px; }
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin: 20px;
+}
+
+.dropdown-btn {
+  width: 430px;
+  padding: 12px 20px;
+  background: #222;
+  border: 2px solid #555;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: #111;
+  border: 1px solid #555;
+  width: 471px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background: #333;
+}
+
+.dropdown-item img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.grid {
+  margin: 20px auto;
+  width: fit-content;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 220px 80px 80px 80px;
+  gap: 5px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.header div {
+  padding: 8px;
+  background: #333;
+  border: 2px solid #555;
+}
+.row {
+  display: grid;
+  grid-template-columns: 220px 80px 80px 80px;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+.cell {
+  padding: 10px;
+  border: 2px solid #333;
+  background: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.name-cell {
+  justify-content: flex-start;
+  padding-left: 10px;
+  height: 57px;
+}
+
+.stat {
+  width: 57px;
+  height: 57px;
+}
+
+.correct { background: green; }
+.close { background: goldenrod; }
+.wrong { background: #444; }
+
+.logo {
+  max-width: 600px;
+  height: auto;
+  margin-top: -200px;
+  margin-bottom: -180px;
+}
+.logo2 {
+  max-width: 400px;
+  height: auto;
+  margin-top: -350px;
+  margin-bottom: -100px;
+}
+
+.name-icon {
+  width: 64px;
+  height: 64px;
+}
+
+#message {
+  margin-top: 15px;
+  font-size: 18px;
+}
+</style>
+</head>
+
+<body>
+<div class="overlay">
+
+
+<h1>
+  <img src="https://cdn.discordapp.com/attachments/1187082794359324672/1500972691492966440/New_Project_21.png?ex=69fa6140&is=69f90fc0&hm=4611ef24d7dac43484fea492649d755df7a22cbd3e27517fbe74831f6a5e7b34" class="logo">
+</h1>
+
+<h1>
+  <img src="https://cdn.discordapp.com/attachments/1187082794359324672/1500976895221567598/New_Project_22.png?ex=69fa652a&is=69f913aa&hm=8b64b8ffb41072446334af5477cb1f4f48b17a8b56a82918528c7e3a14f23022" class="logo2">
+</h1>
+
+<div class="dropdown">
+  <div class="dropdown-btn" onclick="toggleDropdown()">Select</div>
+  <div class="dropdown-content" id="dropdown"></div>
+</div>
+
+<div id="attempts">0 / 5</div>
+
+<div class="grid">
+  <div class="header">
+    <div>Name</div>
+    <div>Min. Level</div>
+    <div>Select Cap</div>
+    <div>Kills on Direct Touch</div>
+  </div>
+
+  <div id="grid"></div>
+</div>
+
+<div id="message"></div>
+
+</div>
+
+<script>
+const DATA = [
+  {name:"Bell", min:1, max:1, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/6/6e/Bell.png/84px-Bell.png"},
+  {name:"Mart", min:1, max:1, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/4/47/Mart.png/84px-Mart.png"},
+  {name:"Baby", min:1, max:2, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/6/62/Baby.png/84px-Baby.png"},
+  {name:"ICBM", min:1, max:2, deadly:false, img:"https://static.wikitide.net/nullscapewiki/thumb/5/5b/ICBM.png/84px-ICBM.png"},
+  {name:"Husk", min:1, max:2, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/8/8a/Husk.png/84px-Husk.png"},
+  {name:"Springer", min:1, max:2, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/1/17/Springer.png/84px-Springer.png"},
+  {name:"Flesh", min:5, max:2, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/2/22/Flesh.png/84px-Flesh.png"},
+  {name:"NIL", min:5, max:1, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/1/19/NIL.png/84px-NIL.png"},
+  {name:"Guardian", min:8, max:1, deadly:false, img:"https://static.wikitide.net/nullscapewiki/thumb/f/fd/Guardian.png/84px-Guardian.png"},
+  {name:"Telefragger", min:8, max:2, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/8/88/Telefragger.png/84px-Telefragger.png"},
+  {name:"???", min:0, max:100, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/7/70/Random.png/84px-Random.png"},
+  {name:"Operator", min:5, max:1, deadly:false, img:"https://static.wikitide.net/nullscapewiki/thumb/1/17/Operator.png/84px-Operator.png"},
+  {name:"Kolóna", min:10, max:2, deadly:false, img:"https://static.wikitide.net/nullscapewiki/thumb/5/53/Kol%C3%B3na.png/84px-Kol%C3%B3na.png"},
+  {name:"Voidbreaker", min:15, max:2, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/5/5a/Voidbreaker.png/84px-Voidbreaker.png"},
+  {name:"Cadence", min:15, max:1, deadly:false, img:"https://static.wikitide.net/nullscapewiki/thumb/6/63/Cadence.png/84px-Cadence.png"},
+  {name:"Voidbound Baby", min:10, max:2, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/d/d2/Voidbound_Baby.png/84px-Voidbound_Baby.png"},
+  {name:"Voidbound Guardian", min:20, max:1, deadly:false, img:"https://static.wikitide.net/nullscapewiki/thumb/4/46/Voidbound_Guardian.png/84px-Voidbound_Guardian.png"},
+  {name:"Scrapmaw", min:25, max:1, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/b/bc/Scrapmaw.png/84px-Scrapmaw.png"},
+  {name:"Ponderer", min:12, max:1, deadly:false, img:"https://static.wikitide.net/nullscapewiki/thumb/e/e4/Ponderer.png/84px-Ponderer.png"},
+  {name:"Catalyst", min:100, max:1, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/b/b2/Catalyst.png/84px-Catalyst.png"},
+  {name:"The Eye", min:1, max:1, deadly:false, img:"https://static.wikitide.net/nullscapewiki/thumb/f/f9/The_Eye.png/84px-The_Eye.png"},
+];
+
+let remaining = [...DATA];
+const target = DATA[Math.floor(Math.random() * DATA.length)];
+
+const dropdown = document.getElementById("dropdown");
+const grid = document.getElementById("grid");
+const message = document.getElementById("message");
+
+let attempts = 0;
+
+function toggleDropdown() {
+  dropdown.style.display =
+    dropdown.style.display === "block" ? "none" : "block";
+}
+
+function renderDropdown() {
+  dropdown.innerHTML = "";
+
+  remaining.forEach(entry => {
+    const item = document.createElement("div");
+    item.className = "dropdown-item";
+
+    const img = document.createElement("img");
+    img.src = entry.img;
+
+    const text = document.createElement("span");
+    text.textContent = entry.name;
+
+    item.appendChild(img);
+    item.appendChild(text);
+
+    item.onclick = () => selectEntry(entry);
+
+    dropdown.appendChild(item);
+  });
+}
+
+function compare(val, targetVal) {
+  if (val === targetVal) return "correct";
+  if (typeof val === "number") {
+    return Math.abs(val - targetVal) <= 2 ? "close" : "wrong";
+  }
+  return "wrong";
+}
+
+function selectEntry(entry) {
+  if (attempts >= 5) return;
+
+  attempts++;
+  document.getElementById("attempts").textContent =
+    `${attempts} / ${5}`;
+
+  dropdown.style.display = "none";
+
+  remaining = remaining.filter(e => e !== entry);
+  renderDropdown();
+
+  const row = document.createElement("div");
+  row.className = "row";
+
+  const nameCell = document.createElement("div");
+nameCell.className = "cell name-cell";
+
+const img = document.createElement("img");
+img.src = entry.img;
+img.className = "name-icon";
+
+const text = document.createElement("span");
+text.textContent = entry.name;
+
+nameCell.appendChild(img);
+nameCell.appendChild(text);
+  nameCell.classList.add(compare(entry.name, target.name));
+  row.appendChild(nameCell);
+
+  ["min","max","deadly"].forEach(field => {
+    const cell = document.createElement("div");
+    cell.className = "cell stat";
+
+    const result = compare(entry[field], target[field]);
+    cell.classList.add(result);
+
+    cell.textContent = entry[field];
+    row.appendChild(cell);
+  });
+
+  grid.appendChild(row);
+
+  if (
+    entry.name === target.name &&
+    entry.min === target.min &&
+    entry.max === target.max &&
+    entry.deadly === target.deadly
+  ) {
+    message.textContent = "wow congrats you gues. nuilcape. hit the ctrl r button fora funny surprise";
+    dropdown.innerHTML = "";
+    return;
+  }
+
+  if (attempts === 5) {
+    message.textContent = `WRONG ${target.name} press ctrl r for a funny surprise`;
+    dropdown.innerHTML = "";
+  }
+}
+
+
+renderDropdown();
+
+window.onclick = function(e) {
+  if (!e.target.closest('.dropdown')) {
+    dropdown.style.display = "none";
+  }
+}
+</script>
+</body>
+</html>
