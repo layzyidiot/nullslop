@@ -37,6 +37,15 @@ h1 { margin-top: -30px; }
   cursor: pointer;
 }
 
+.share-btn {
+  width: 430px;
+  padding: 12px 20px;
+  background: #281135;
+  display: inline-block;
+  border: 2px solid #1e0d22;
+  cursor: pointer;
+}
+
 .dropdown-content {
   display: none;
   position: absolute;
@@ -167,11 +176,20 @@ h1 { margin-top: -30px; }
   <div id="grid"></div>
 </div>
 
+<div id="share">
+  <div class="share-btn" onclick="share()">Share results 2 clipboard</div>
+</div>
+
 <div id="message"></div>
 
 </div>
 
+
+
 <script>
+
+
+
 const DATA = [
   {name:"Bell", min:1, max:1, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/6/6e/Bell.png/84px-Bell.png"},
   {name:"Mart", min:1, max:1, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/4/47/Mart.png/84px-Mart.png"},
@@ -197,13 +215,51 @@ const DATA = [
 ];
 
 let remaining = [...DATA];
-const target = DATA[Math.floor(Math.random() * DATA.length)];
+let guesses = [];
+
+const date = new Date();
+
+const year = date.getUTCFullYear();
+const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+const day = String(date.getUTCDate()).padStart(2, "0");
+
+const thing = Number(`${year}${month}${day}`);
+
+const x = Math.sin(thing) * 10000;
+const random = x - Math.floor(x);
+
+const target = DATA[Math.floor(random * DATA.length)];
 
 const dropdown = document.getElementById("dropdown");
+const sharebtn = document.getElementById("share");
 const grid = document.getElementById("grid");
 const message = document.getElementById("message");
 
+sharebtn.style.display = "none";
+
 let attempts = 0;
+
+function share() {
+  let str = "NULLDLE Results (https://layzyidiot.github.io/nullslop/)\n";
+  guesses.forEach(entry => {
+    str = str.concat("\n")
+    console.log(entry);
+    ["name", "min","max","deadly"].forEach(field => {
+      if (field === "name") {
+        str = str.concat(entry.name === target.name ? "🟩" : "🟥")
+      }
+      else
+      {
+        const result = compare(entry[field], target[field]);
+        console.log(field, result)
+        str = str.concat(result === "close" ? "🟨" : result === "correct" ? "🟩" : "🟥");
+      }
+    });
+  })
+  console.log(str);
+
+  navigator.clipboard.writeText(str);
+}
 
 function toggleDropdown() {
   dropdown.style.display =
@@ -244,6 +300,7 @@ function selectEntry(entry) {
   if (attempts >= 5) return;
 
   attempts++;
+  guesses[attempts] = entry;
   document.getElementById("attempts").textContent =
     `${attempts} / ${5}`;
 
@@ -289,14 +346,16 @@ nameCell.appendChild(text);
     entry.max === target.max &&
     entry.deadly === target.deadly
   ) {
-    message.textContent = "wow congrats you gues. nuilcape. hit the ctrl r button fora funny surprise";
+    message.textContent = "wow congrats you gues. todays nulldle. come back tomorrrow if you want";
     dropdown.innerHTML = "";
+    sharebtn.style.display = "block";
     return;
   }
 
   if (attempts === 5) {
     message.textContent = `WRONG ${target.name} press ctrl r for a funny surprise`;
     dropdown.innerHTML = "";
+    sharebtn.style.display = "block";
   }
 }
 
