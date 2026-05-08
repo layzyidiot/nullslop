@@ -213,7 +213,6 @@ const DATA = [
   {name:"Catalyst", min:100, max:1, deadly:true, img:"https://static.wikitide.net/nullscapewiki/thumb/b/b2/Catalyst.png/84px-Catalyst.png"},
   {name:"The Eye", min:1, max:1, deadly:false, img:"https://static.wikitide.net/nullscapewiki/thumb/f/f9/The_Eye.png/84px-The_Eye.png"},
 ];
-
 let remaining = [...DATA];
 let guesses = [];
 
@@ -228,7 +227,7 @@ const thing = Number(`${year}${month}${day}`);
 const x = Math.sin(thing) * 10000;
 const random = x - Math.floor(x);
 
-const target = DATA[Math.floor(random * DATA.length)];
+const target = DATA[Math.round(random * DATA.length)];
 
 const dropdown = document.getElementById("dropdown");
 const sharebtn = document.getElementById("share");
